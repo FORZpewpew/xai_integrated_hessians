@@ -5,7 +5,7 @@ This library provides an implementation of the Integrated Hessians method for ex
 ## Features
 - Compute Integrated Hessians for feature interaction analysis.
 - Support for RoBERTa and other transformer-based models.
-- Example usage with IMDb sentiment analysis dataset.
+- Example usage with sentiment analysis on custom input text.
 
 ## Installation
 
