@@ -108,7 +108,7 @@ def filter_tokens(tokens, pos_tags):
     filtered_tokens = []
     for i, token in enumerate(tokens):
         # Exclude punctuation and stopwords unless it's a negation word
-        if pos_tags[i] in ['PUNCT', 'DET', 'ADP', 'AUX'] and token.lower() not in negation_words:
+        if pos_tags[i] in ['PUNCT', 'DET', 'ADP', 'AUX'] and token.lower() not in negation_words and token.lower() not in [',', '.', ';', ':']:
             continue
         filtered_tokens.append(token)
     
