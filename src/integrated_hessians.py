@@ -89,10 +89,6 @@ def integrated_hessians(model, inputs, baseline, steps=50, target_class=1):
 
 
 
-import torch
-from torch.autograd import grad
-from tqdm import tqdm
-
 def integrated_hessians_full(model, inputs, baseline, steps=50, target_class=1):
     """
     Compute the full Integrated Hessians for a single input using double integration.
