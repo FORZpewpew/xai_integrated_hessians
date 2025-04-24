@@ -26,7 +26,7 @@ Example usage can be found in its specified jupyter notebook
 ## Project Structure
 - `src/`: Library code.
   - `integrated_gradients.py`: Implementation of Integrated Gradients.
-  - `integrated_hessians.py`: Implementation of Integrated Hessians.
+  - `integrated_hessians.py`: Implementation of Integrated Hessians. integrated_hessian is approximated version of integrated_hessian_full.
   - `model_utils.py`: Utilities for loading models and tokenizers.
 - `examples/`: Example scripts.
   - `integrated_hessians_demo.ipynb`: Example usage of the library.

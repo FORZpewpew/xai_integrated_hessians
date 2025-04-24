@@ -93,7 +93,7 @@ def visualize_filtered_hessians(hessians, tokens, valid_length):
 
     # Plot the filtered heatmap
     plt.figure(figsize=(12, 10))
-    sns.heatmap(filtered_hessians, xticklabels=filtered_tokens, yticklabels=filtered_tokens, cmap="coolwarm", annot=False)
+    sns.heatmap(filtered_hessians, xticklabels=filtered_tokens, yticklabels=filtered_tokens, cmap="coolwarm", annot=True)
     plt.title("Filtered Integrated Hessians Interaction Matrix")
     plt.xlabel("Tokens")
     plt.ylabel("Tokens")
@@ -123,22 +123,11 @@ def get_pos_tags(tokens):
 
 
 def find_most_important_tokens_from_hessians(hessians, tokens, valid_length):
-    """
-    Finds the most important token interaction from the Hessian matrix after filtering.
-    
-    Args:
-        hessians: Hessians interaction matrix (seq_len x seq_len)
-        tokens: List of decoded tokens
-        valid_length: Number of valid tokens (non-padding)
-    """
-    # Trim tokens and Hessians to valid length
     tokens = tokens[:valid_length]
     hessians = hessians[:valid_length, :valid_length]
 
-    # Get POS tags
     pos_tags = get_pos_tags(tokens)
-    
-    # Filter tokens and keep track of original indices
+
     filtered_tokens = []
     filtered_indices = []
     for i, (token, tag) in enumerate(zip(tokens, pos_tags)):
@@ -146,19 +135,20 @@ def find_most_important_tokens_from_hessians(hessians, tokens, valid_length):
             continue
         filtered_tokens.append(token)
         filtered_indices.append(i)
-    
+
     if len(filtered_indices) < 2:
         print("Not enough informative tokens for interaction analysis.")
         return None
 
-    # Find most important interaction between filtered tokens
+    # Slice the matrix once into filtered form (like in visualization)
+    filtered_hessians = hessians[filtered_indices][:, filtered_indices]
+
+    # Find max interaction in filtered matrix
     max_val = 0
     max_pair = (0, 1)
-    for i in range(len(filtered_indices)):
-        for j in range(i + 1, len(filtered_indices)):
-            idx_i = filtered_indices[i]
-            idx_j = filtered_indices[j]
-            val = abs(hessians[idx_i, idx_j].item())
+    for i in range(len(filtered_tokens)):
+        for j in range(i + 1, len(filtered_tokens)):
+            val = abs(filtered_hessians[i, j].item())
             if val > max_val:
                 max_val = val
                 max_pair = (i, j)
@@ -167,4 +157,3 @@ def find_most_important_tokens_from_hessians(hessians, tokens, valid_length):
           filtered_tokens[max_pair[0]], 
           filtered_tokens[max_pair[1]])
     return filtered_tokens[max_pair[0]], filtered_tokens[max_pair[1]]
-
