@@ -1,5 +1,6 @@
-datasets
 torch
 transformers
 matplotlib
 seaborn
+spacy
+nltk

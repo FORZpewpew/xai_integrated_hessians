@@ -1,6 +1,7 @@
 import torch
 from torch.autograd import grad
 from tqdm import tqdm
+from torch.nn.attention import sdpa_kernel, SDPBackend
 
 # Set a fixed random seed for reproducibility
 torch.manual_seed(42)
@@ -22,12 +23,14 @@ def integrated_hessians(model, inputs, baseline, steps=50, target_class=1):
         embeddings = model.bert.embeddings.word_embeddings
     elif hasattr(model, 'roberta'):
         embeddings = model.roberta.embeddings.word_embeddings
+    elif hasattr(model, 'distilbert'):
+        embeddings = model.distilbert.embeddings.word_embeddings
     else:
-        raise AttributeError("The model does not have a recognized embedding layer (bert or roberta).")
+        raise AttributeError(f"The model does not have a recognized embedding layer: {model}.")
 
     device = next(model.parameters()).device
 
-    with torch.backends.cuda.sdp_kernel(enable_flash=False, enable_math=True, enable_mem_efficient=False):
+    with sdpa_kernel([SDPBackend.MATH]):
         # Compute token embeddings for input and baseline
         input_embed = embeddings(inputs).detach()
         baseline_embed = embeddings(baseline).detach()
